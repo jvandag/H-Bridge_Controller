@@ -4,7 +4,8 @@ Controls an H-Bridge motor driver using four PWM pins.
 Author: Jeremiah Vandagrift
 Date: 03-Feb-2026
 */
-#pragma once
+#ifndef HBRIDGE_CONTROLLER_H
+#define HBRIDGE_CONTROLLER_H
 
 #include <Arduino.h>
 
@@ -49,3 +50,5 @@ class HBridgeController {
 
         static uint32_t deadtime_ticks_from_ns(uint32_t ns);
 };
+
+#endif // HBRIDGE_CONTROLLER_H
