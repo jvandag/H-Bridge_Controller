@@ -1,0 +1,13 @@
+{
+  "name": "H-Bridge_Controller",
+  "version": "0.1.0",
+  "description": "ESP32 H-Bridge controller using MCPWM with deadtime",
+  "keywords": ["esp32", "mcpwm", "h-bridge", "motor"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jvandag/H-Bridge_Controller"
+  },
+  "frameworks": ["arduino"],
+  "platforms": ["espressif32"],
+  "headers": ["HBridgeController.h"]
+}

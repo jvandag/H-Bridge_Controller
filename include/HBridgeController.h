@@ -6,6 +6,8 @@ Date: 03-Feb-2026
 */
 #pragma once
 
+#include <Arduino.h>
+
 extern "C" { // Include C headers
   #include "driver/mcpwm.h"
   // #include "esp_clk.h"
