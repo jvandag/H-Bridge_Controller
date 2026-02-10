@@ -27,7 +27,7 @@ enum run_state {
 
 class HBridgeController {
     public: 
-        HBridgeController(uint8_t T1_pin, uint8_t T2_pin, uint8_t T3_pin, uint8_t T4_pin, uint32_t freq = 1000, float duty_cycle = 0.75, 
+        HBridgeController(uint8_t HS1, uint8_t LS1, uint8_t HS2, uint8_t LS2, uint32_t freq = 1000, float duty_cycle = 0.75, 
         mcpwm_unit_t MCPWM_UNIT = MCPWM_UNIT_0, uint32_t deadtime_ns = 200, direction start_direction = FORWARD);
         bool set_direction(direction dir);
         bool set_freq(uint32_t freq); // must not have a period less than the deadtime
@@ -39,7 +39,7 @@ class HBridgeController {
         bool start();
         bool stop();
     private:
-        uint8_t T1_pin, T2_pin, T3_pin, T4_pin;
+        uint8_t HS1, HS2, LS1, LS2;
         uint32_t freq;
         float duty_cycle;
         mcpwm_unit_t MCPWM_UNIT = MCPWM_UNIT_0;

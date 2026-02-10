@@ -3,10 +3,10 @@
 #include <Esp.h>
 
 // assign default values and call start function to initialize MCPWM
-HBridgeController::HBridgeController(uint8_t T1_pin, uint8_t T2_pin, uint8_t T3_pin, uint8_t T4_pin,
+HBridgeController::HBridgeController(uint8_t HS1, uint8_t LS1, uint8_t HS2, uint8_t LS2,
                                      uint32_t freq, float duty_cycle, mcpwm_unit_t MCPWM_UNIT,
                                      uint32_t deadtime_ns, direction start_direction)
-: T1_pin(T1_pin), T2_pin(T2_pin), T3_pin(T3_pin), T4_pin(T4_pin), freq(freq), duty_cycle(duty_cycle), MCPWM_UNIT(MCPWM_UNIT), deadtime_ns(deadtime_ns), dir(start_direction) {
+: HS1(HS1), LS1(LS1), HS2(HS2), LS2(LS2), freq(freq), duty_cycle(duty_cycle), MCPWM_UNIT(MCPWM_UNIT), deadtime_ns(deadtime_ns), dir(start_direction) {
     this->start();
 }
 
@@ -74,8 +74,8 @@ bool HBridgeController::set_duty_cycle(float duty_cycle) {
     
     // Update duty cycle on hardware PWM here
 
-    // For forward direction we want to always apply a voltage to T2 while PWMing T3 and T4
-    // For reverse direction we want to always apply a voltage to T4 while PWMing T1 and T2
+    // For forward direction we want to always apply a voltage to LS1 while PWMing HS1 and LS2
+    // For reverse direction we want to always apply a voltage to LS2 while PWMing HS2 and LS1
     mcpwm_set_duty(this->MCPWM_UNIT, MCPWM_TIMER_0, MCPWM_OPR_A, this->dir == REVERSE ? this->duty_cycle : 0);
     mcpwm_set_duty_type(this->MCPWM_UNIT, MCPWM_TIMER_0, MCPWM_OPR_A, MCPWM_DUTY_MODE_0);
 
@@ -106,22 +106,22 @@ float HBridgeController::get_duty_cycle() {
 */
 bool HBridgeController::start() {
     // Route MCPWM signals to the GPIO matrix
-    mcpwm_gpio_init(this->MCPWM_UNIT, MCPWM0A, this->T1_pin);
-    mcpwm_gpio_init(this->MCPWM_UNIT, MCPWM0B, this->T2_pin);
-    mcpwm_gpio_init(this->MCPWM_UNIT, MCPWM1A, this->T3_pin);
-    mcpwm_gpio_init(this->MCPWM_UNIT, MCPWM1B, this->T4_pin);
+    mcpwm_gpio_init(this->MCPWM_UNIT, MCPWM0A, this->HS1);
+    mcpwm_gpio_init(this->MCPWM_UNIT, MCPWM0B, this->LS1);
+    mcpwm_gpio_init(this->MCPWM_UNIT, MCPWM1A, this->HS2);
+    mcpwm_gpio_init(this->MCPWM_UNIT, MCPWM1B, this->LS2);
 
     
     this->set_freq(freq);
     this->cfg.counter_mode = MCPWM_UP_COUNTER;
     this->cfg.duty_mode = MCPWM_DUTY_MODE_0;
 
-    // Pair 1 (T1/T2) on TIMER0
+    // Pair 1 (HS1/LS1) on TIMER0
     this->cfg.cmpr_a = this->dir == REVERSE ? this->duty_cycle : 0;
     this->cfg.cmpr_b = this->dir == REVERSE ? this->duty_cycle : 0;
     mcpwm_init(this->MCPWM_UNIT, MCPWM_TIMER_0, &this->cfg);
 
-    // Pair 2 (T3/T4) on TIMER1
+    // Pair 2 (HS2/LS2) on TIMER1
     cfg.cmpr_a = this->dir == FORWARD ? this->duty_cycle : 0;
     cfg.cmpr_b = this->dir == FORWARD ? this->duty_cycle : 0;
     mcpwm_init(this->MCPWM_UNIT, MCPWM_TIMER_1, &cfg);
